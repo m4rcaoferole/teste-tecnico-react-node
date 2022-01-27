@@ -1,5 +1,7 @@
 import User from '../models/User';
 
+import { createPasswordHash } from '../services/auth';
+
 class UsersController {
   async index(req, res) {
     try {
@@ -10,7 +12,20 @@ class UsersController {
       return res.status(500).json({ error: 'Internal Server Error.' });
     }
   }
-  async show(req, res) {}
+  async show(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(404).json();
+      }
+      return res.json(user);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error.' });
+    }
+  }
 
   async create(req, res) {
     try {
@@ -24,7 +39,13 @@ class UsersController {
           .json({ message: `User ${email} already exists.` });
       }
 
-      const newUser = await User.create({ email, password });
+      // Criptografia no password
+      const encryptedPassword = await createPasswordHash(password);
+
+      const newUser = await User.create({
+        email,
+        password: encryptedPassword,
+      });
 
       return res.status(201).json(newUser);
     } catch (err) {
@@ -32,8 +53,42 @@ class UsersController {
       return res.status(500).json({ error: 'Internal Server Error.' });
     }
   }
-  async update(req, res) {}
-  async destroy(req, res) {}
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { email, password } = req.body;
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(404).json();
+      }
+
+      const encryptedPassword = await createPasswordHash(password);
+      await user.updateOne({ email, password: encryptedPassword });
+
+      return res.status(200).json();
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error.' });
+    }
+  }
+  async destroy(req, res) {
+    try {
+      const { id } = req.parms;
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(404).json();
+      }
+
+      await user.deleteOne();
+      return res.status(200).json();
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error.' });
+    }
+  }
 }
 
 export default new UsersController();

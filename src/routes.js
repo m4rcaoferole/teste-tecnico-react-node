@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import HelloController from './controllers/HelloController';
 import UsersController from './controllers/UsersController';
+import RepositoriesController from './controllers/RepositoriesController';
 
 const routes = new Router();
 
@@ -12,5 +13,7 @@ routes.get('/users/:id', UsersController.show);
 routes.post('/users', UsersController.create);
 routes.put('/users/:id', UsersController.update);
 routes.delete('/users/:id', UsersController.destroy);
+
+routes.get('/users/:user_id/repositories', RepositoriesController.index);
 
 export default routes;

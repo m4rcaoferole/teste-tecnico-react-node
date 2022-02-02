@@ -5,6 +5,12 @@ import RepositoriesController from './controllers/RepositoriesController';
 
 const routes = new Router();
 
+// controller publíco
+
+// middleware
+
+// controller privado
+
 routes.get('/hello', HelloController.index);
 
 // Formato RestFull

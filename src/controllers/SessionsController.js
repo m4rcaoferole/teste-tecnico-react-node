@@ -6,7 +6,7 @@ import { checkPassword } from '../services/auth';
 import authConfig from '../config/auth';
 class SessionController {
   async create(req, res) {
-    const { email, password } = req.boby;
+    const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {

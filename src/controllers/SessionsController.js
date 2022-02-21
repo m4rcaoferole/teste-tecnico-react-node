@@ -10,14 +10,14 @@ class SessionController {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ error: 'User / Password invalid.' });
+      return res.status(402).json({ error: 'User invalid.' });
     }
 
     if (!checkPassword(user, password)) {
-      return res.status(401).json({ error: 'User / password invalid.' });
+      return res.status(401).json({ error: 'Password invalid.' });
     }
 
-    const { id } = await user;
+    const { id } = user;
 
     return res.json({
       user: {

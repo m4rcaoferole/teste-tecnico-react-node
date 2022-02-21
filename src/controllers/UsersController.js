@@ -75,7 +75,7 @@ class UsersController {
   }
   async destroy(req, res) {
     try {
-      const { id } = req.parms;
+      const { id } = req.params;
       const user = await User.findById(id);
 
       if (!user) {
